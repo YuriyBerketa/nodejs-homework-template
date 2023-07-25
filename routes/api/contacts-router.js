@@ -4,7 +4,7 @@ import contactControlles from '../../controllers/contact-controllers.js';
 
 import contactsSchemas from '../../schemas/contacts-schemas.js';
 import { validateBody } from '../../decorators/index.js';
-// import {isEmptyBody, isValidId} from "../../middlewars/index.js";
+
 
 import isEmptyBody from "../../middlewars/isEmptyBody.js";
 import isValidId from '../../middlewars/isValidId.js';
@@ -35,7 +35,7 @@ isValidId,
 
 contactsRouter.patch(
   '/:id/favorite',
-isValidId, isEmptyBody, validateBody(contactsSchemas.contactUpdateFavoriteSchema), contactControlles.updateFavorite
+isValidId, isEmptyBody, validateBody(contactsSchemas.contactUpdateFavoriteSchema), contactControlles.updateStatusContact
 );
 
 

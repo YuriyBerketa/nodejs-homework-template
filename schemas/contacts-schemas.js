@@ -2,7 +2,6 @@ import Joi from 'joi';
 
 import { phoneCheck, emailCheck } from "../constants/constans.js";
 
-// const phoneRegex = /^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,4}[-\s.]?[0-9]{1,9}$/;
 
 const contactAddSchema = Joi.object({
   name: Joi.string().min(3).required(),

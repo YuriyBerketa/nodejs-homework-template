@@ -1,6 +1,5 @@
 import Contact from '../models/contact.js';
 
-// import contactsServise from '../models/contacts.js'; 
 import { HttpError } from '../helpers/index.js';
 import { ctrlWrapper } from '../decorators/index.js';
 
@@ -33,11 +32,11 @@ const updateById = async (req, res) => {
 };
 
 
-const updateFavorite = async (req, res) => {
+const updateStatusContact = async (req, res) => {
   const { id } = req.params;
   const result = await Contact.findByIdAndUpdate(id, req.body, {new: true});
   if (!result) {
-    throw HttpError(404, `Contact with id=${id} not found`);
+    throw HttpError(400, `missing field favorite`);
   }
   res.json(result);
 };
@@ -56,6 +55,6 @@ export default {
   getById: ctrlWrapper(getById),
   add: ctrlWrapper(add),
   updateById: ctrlWrapper(updateById),
-  updateFavorite: ctrlWrapper(updateFavorite),
+  updateStatusContact: ctrlWrapper(updateStatusContact),
   deleteById: ctrlWrapper(deleteById),
 };
