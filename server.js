@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
-import dotenv from "dotenv";
+// import dotenv from "dotenv";
 import app from "./app.js";
+import "dotenv/config";
 
-
-dotenv.config();
+// dotenv.config();
 
 const {DB_HOST, PORT} = process.env;
 
