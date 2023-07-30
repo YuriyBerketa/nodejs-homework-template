@@ -9,7 +9,7 @@ import { ctrlWrapper } from '../decorators/index.js';
 dotenv.config();
 
 const { JWT_SECRET } = process.env;
-console.log(JWT_SECRET);
+
 
 const signup = async (req, res) => {
 const { email, password } = req.body;
@@ -42,11 +42,27 @@ const signin = async (req, res) => {
     const payload = {
         id: user._id,
     }
-    const token = jwt.sign(payload, JWT_SECRET, {expiresIn: "23h"});
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
+    await User.findByIdAndUpdate(user._id, { token });
     res.json({ token });
+}
+
+const getCurrent = (req, res) => {
+    const { name, email } = req.user;
+    res.json({ name, email });
+}
+
+const signout = async (req, res) => {
+    const { _id } = req.user;
+    await User.findByIdAndUpdate(_id, { token: "" });
+    res.json({
+        message: "Signout ssucsess"
+    })
 }
 
 export default {
     signup: ctrlWrapper(signup),
     signin: ctrlWrapper(signin),
+    getCurrent: ctrlWrapper(getCurrent),
+    signout: ctrlWrapper(signout),
 }

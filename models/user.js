@@ -4,21 +4,31 @@ import { handleSaveError, validateAtUpdate } from "./hooks.js";
 
 import { emailCheckVerification } from "../constants/user-constants.js";
 
+import { subscription, subscriptionDefault } from "../constants/user-constants.js";
+
 const userSchema = new Schema({
     name: {
         type: String,
-        required: true,
+        required: [true, 'Set name for contact'],
     },
     email: {
         type: String,
         match: emailCheckVerification,
         unique: true,
-        required: true,
+        required: [true, 'Set Email for contact'],
     },
     password: {
         type: String,
         minlenth: 6,
-        required: true,
+        required: [true, 'Set password for user'],
+    },
+    subscription: {
+      type: String,
+      enum: subscription,
+      default: subscriptionDefault,
+    },
+    token: {
+        type: String, 
     }
 }, { versionKey: false, timestamps: true });
 
