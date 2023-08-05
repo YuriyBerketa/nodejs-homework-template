@@ -9,6 +9,7 @@ import { validateBody } from '../../decorators/index.js';
 import isEmptyBody from "../../middlewars/isEmptyBody.js";
 import isValidId from '../../middlewars/isValidId.js';
 import authenticate from "../../middlewars/authenticate.js";
+import upload from '../../middlewars/upload.js';
 
 
 const contactsRouter = express.Router();
@@ -21,6 +22,7 @@ contactsRouter.get('/:id', isValidId, contactControlles.getById);
 
 contactsRouter.post(
   '/',
+  upload.single("avatar"),
   isEmptyBody,
   validateBody(contactsSchemas.contactAddSchema),
   contactControlles.add
