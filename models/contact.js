@@ -27,6 +27,7 @@ const contactSchema = new Schema({
     },
     avatarURL: {
         type: String,
+        required: true,
     },
     owner: {
         type: Schema.Types.ObjectId,
