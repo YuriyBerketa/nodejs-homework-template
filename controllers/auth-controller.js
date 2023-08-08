@@ -18,6 +18,7 @@ const { JWT_SECRET } = process.env;
 const avatarPath = path.resolve('tmp');
 
 
+
 const register = async (req, res) => {
 const { email, password } = req.body;
     const user = await User.findOne({ email });
@@ -72,9 +73,14 @@ const updateAvatar = async (req, res) => {
     const { _id } = req.user;
     const { path: oldPath, filename } = req.file;
     const newPath = path.join(avatarPath, filename);
+
+    const originalAvatar = await Jimp.read(oldPath);
+    originalAvatar.resize(250, 250).write(oldPath);
+
     await fs.rename(oldPath, newPath);
+
     const avatarURL = path.join("avatars", filename);
-    Jimp.read(oldPath).then(img => img.resize(250, 250).write(avatarURL)).catch(err=> console.log(err));
+
 
     await User.findByIdAndUpdate(_id, { avatarURL });
    
