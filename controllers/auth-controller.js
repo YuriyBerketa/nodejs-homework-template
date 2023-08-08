@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import gravatar from 'gravatar';
 import path from 'path';
 import fs from 'fs/promises';
+import Jimp from "jimp";
 
 
 import { HttpError } from '../helpers/index.js';
@@ -14,7 +15,7 @@ dotenv.config();
 
 const { JWT_SECRET } = process.env;
 
-const avatarPath = path.resolve('public', 'avatars');
+const avatarPath = path.resolve('tmp');
 
 
 const register = async (req, res) => {
@@ -73,10 +74,10 @@ const updateAvatar = async (req, res) => {
     const newPath = path.join(avatarPath, filename);
     await fs.rename(oldPath, newPath);
     const avatarURL = path.join("avatars", filename);
-    await User.findByIdAndUpdate(_id, { avatarURL });
-    // // console.log(filename);
-    // console.log(originalname);
+    Jimp.read(oldPath).then(img => img.resize(250, 250).write(avatarURL)).catch(err=> console.log(err));
 
+    await User.findByIdAndUpdate(_id, { avatarURL });
+   
     res.json({
         avatarURL,
     })
