@@ -3,6 +3,9 @@ import jwt from "jsonwebtoken";
 import User from "../models/user.js";
 import dotenv from 'dotenv';
 import gravatar from 'gravatar';
+import path from 'path';
+import fs from 'fs/promises';
+
 
 import { HttpError } from '../helpers/index.js';
 import { ctrlWrapper } from '../decorators/index.js';
@@ -10,6 +13,8 @@ import { ctrlWrapper } from '../decorators/index.js';
 dotenv.config();
 
 const { JWT_SECRET } = process.env;
+
+const avatarPath = path.resolve('public', 'avatars');
 
 
 const register = async (req, res) => {
@@ -62,9 +67,25 @@ const logout = async (req, res) => {
     })
 }
 
+const updateAvatar = async (req, res) => {
+    const { _id } = req.user;
+    const { path: oldPath, filename } = req.file;
+    const newPath = path.join(avatarPath, filename);
+    await fs.rename(oldPath, newPath);
+    const avatarURL = path.join("avatars", filename);
+    await User.findByIdAndUpdate(_id, { avatarURL });
+    // // console.log(filename);
+    // console.log(originalname);
+
+    res.json({
+        avatarURL,
+    })
+}
+
 export default {
     register: ctrlWrapper(register),
     login: ctrlWrapper(login),
     getCurrent: ctrlWrapper(getCurrent),
     logout: ctrlWrapper(logout),
+    updateAvatar: ctrlWrapper(updateAvatar),
 }
