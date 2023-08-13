@@ -29,7 +29,11 @@ const userSchema = new Schema({
     },
     token: {
         type: String, 
-    }
+    },
+    avatarURL: {
+        type: String,
+    },
+
 }, { versionKey: false, timestamps: true });
 
 userSchema.pre("findOneAndUpdate", validateAtUpdate);

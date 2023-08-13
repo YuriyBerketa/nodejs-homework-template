@@ -2,6 +2,11 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/user.js";
 import dotenv from 'dotenv';
+import gravatar from 'gravatar';
+import path from 'path';
+import fs from 'fs/promises';
+import Jimp from "jimp";
+
 
 import { HttpError } from '../helpers/index.js';
 import { ctrlWrapper } from '../decorators/index.js';
@@ -9,6 +14,9 @@ import { ctrlWrapper } from '../decorators/index.js';
 dotenv.config();
 
 const { JWT_SECRET } = process.env;
+
+const avatarPath = path.resolve('tmp');
+
 
 
 const register = async (req, res) => {
@@ -19,8 +27,9 @@ const { email, password } = req.body;
     }
 
     const hashPassword = await bcrypt.hash(password, 10);
+    const avatarURL = gravatar.url(email);
 
-    const newUser = await User.create({ ...req.body, password: hashPassword });
+    const newUser = await User.create({ ...req.body, password: hashPassword, avatarURL});
     
     res.status(201).json({
         name: newUser.name,
@@ -60,9 +69,30 @@ const logout = async (req, res) => {
     })
 }
 
+const updateAvatar = async (req, res) => {
+    const { _id } = req.user;
+    const { path: oldPath, filename } = req.file;
+    const newPath = path.join(avatarPath, filename);
+
+    const originalAvatar = await Jimp.read(oldPath);
+    originalAvatar.resize(250, 250).write(oldPath);
+
+    await fs.rename(oldPath, newPath);
+
+    const avatarURL = path.join("avatars", filename);
+
+
+    await User.findByIdAndUpdate(_id, { avatarURL });
+   
+    res.json({
+        avatarURL,
+    })
+}
+
 export default {
     register: ctrlWrapper(register),
     login: ctrlWrapper(login),
     getCurrent: ctrlWrapper(getCurrent),
     logout: ctrlWrapper(logout),
+    updateAvatar: ctrlWrapper(updateAvatar),
 }
