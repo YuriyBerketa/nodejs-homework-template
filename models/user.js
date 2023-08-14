@@ -46,6 +46,7 @@ const userSchema = new Schema({
 userSchema.pre("findOneAndUpdate", validateAtUpdate);
 
 userSchema.post("save", handleSaveError);
+
 userSchema.post("findOneAndUpdate", handleSaveError);
 
 const User = model("user", userSchema);
