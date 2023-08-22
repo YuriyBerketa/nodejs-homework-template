@@ -33,12 +33,20 @@ const userSchema = new Schema({
     avatarURL: {
         type: String,
     },
+    verify: {
+        type: Boolean,
+        default: false,
+    },
+    verificationCode: {
+        type: String,
+    },
 
 }, { versionKey: false, timestamps: true });
 
 userSchema.pre("findOneAndUpdate", validateAtUpdate);
 
 userSchema.post("save", handleSaveError);
+
 userSchema.post("findOneAndUpdate", handleSaveError);
 
 const User = model("user", userSchema);
